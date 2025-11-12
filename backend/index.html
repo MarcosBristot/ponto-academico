@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Presenças</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      color: #38bdf8;
+    }
+    #lista {
+      width: 300px;
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #1e293b;
+      margin: 6px 0;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s;
+    }
+    li:hover {
+      background: #334155;
+    }
+    .dot {
+      height: 10px;
+      width: 10px;
+      background-color: #22c55e;
+      border-radius: 50%;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <h1>📢 Presenças de Hoje</h1>
+  <ul id="lista"></ul>
+  <footer>Atualiza automaticamente via WebSocket</footer>
+
+  <script>
+    const lista = document.getElementById("lista");
+
+    // Função para adicionar presença na tela
+    function adicionarPresenca(nome) {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${nome}</span> <span class="dot"></span>`;
+      lista.appendChild(li);
+    }
+
+    // Carrega as presenças salvas no Redis via API Flask
+    async function carregarPresencas() {
+      const resp = await fetch("http://localhost:5000/presencas");
+      const data = await resp.json();
+      data.presencas.forEach(nome => adicionarPresenca(nome));
+    }
+
+    // Conecta ao WebSocket do Flask
+    function conectarWebSocket() {
+      const ws = new WebSocket("ws://localhost:5000/ws");
+      ws.onopen = () => console.log("🟢 Conectado ao WebSocket");
+      ws.onmessage = (event) => {
+        console.log("📩 Nova mensagem:", event.data);
+        const nome = event.data.replace("📢 Nova presença: ", "");
+        adicionarPresenca(nome);
+      };
+      ws.onclose = () => {
+        console.log("🔴 WebSocket desconectado. Tentando reconectar...");
+        setTimeout(conectarWebSocket, 3000);
+      };
+    }
+
+    // Inicializa a página
+    carregarPresencas();
+    conectarWebSocket();
+  </script>
+</body>
+</html>

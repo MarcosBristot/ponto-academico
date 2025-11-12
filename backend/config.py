@@ -1,0 +1,1 @@
+RABBIT_CONFIG = 'amqp://admin:admin123@10.1.25.10:5672/'
