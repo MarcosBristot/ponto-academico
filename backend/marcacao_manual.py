@@ -10,7 +10,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))
 channel = connection.channel()
 channel.queue_declare(queue=QUEUE_NAME)
 
-print("🟢 Simulador de presença iniciado!")
+print("🟢 Marcação manual da chamada")
 print("Digite o nome do aluno e pressione Enter para enviar a presença.\n")
 
 try:
