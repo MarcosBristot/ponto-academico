@@ -20,7 +20,7 @@ try:
             continue
         mensagem = {
             "aluno": nome,
-            "sala": "101",
+            "uid": "Registro Manual",
             "horario": datetime.now().isoformat()
         }
         channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=json.dumps(mensagem))

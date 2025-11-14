@@ -18,7 +18,7 @@ reader = SimpleMFRC522()
 # --- Alunos cadastrados ---
 ALUNOS = {
     "219085403461": "Marcos",
-    "703695879170": "Raul e Guilherme",
+    "703695879170": "Raul",
 }
 
 print("📡 Aproxime o cartão RFID do leitor...")
